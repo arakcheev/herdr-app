@@ -165,6 +165,11 @@ impl QuickPanel {
                 let above = NSRect::new(NSPoint::new(to.origin.x, to.origin.y + h - 1.0), to.size);
                 let () = msg_send![self.window, setFrame: above display: NO];
             }
+            // Herdr becomes the active app, as Ghostty's quick terminal does: input
+            // source switching (Caps Lock, the Fn key) follows the active app, so a
+            // panel that only takes the keys never sees the language change. hide()
+            // then hides the app and the app before it gets the keys back.
+            let () = msg_send![app, activateIgnoringOtherApps: YES];
             let () = msg_send![self.window, makeKeyAndOrderFront: nil];
             let _: BOOL = msg_send![self.window, makeFirstResponder: self.view];
             if animate {
